@@ -10,16 +10,40 @@ const ResponseHandler = (message = null, content = null) => {
 };
 
 export default class PostController {
-  async createPost(req, res) {
-    const newPost = await _postService.createPost(req.body);
-
-    res.status(201).send(ResponseHandler("Post created", newPost));
-
+  async getAllPosts(req, res) {
     try {
+      const userId = req.params.userId;
+      const posts = await _postService.getAllPosts(userId);
+
+      res.status(200).send(ResponseHandler("Posts retrieved", posts));
+    } catch (error) {
+      res
+        .status(error.status || 400)
+        .send(ResponseHandler(error.message || "Fail to retrieve posts"));
+    }
+  }
+
+  async createPost(req, res) {
+    try {
+      const newPost = await _postService.createPost(req.body);
+
+      res.status(201).send(ResponseHandler("Post created", newPost));
     } catch (error) {
       res
         .status(error.status || 400)
         .send(ResponseHandler(error.message || "Fail to create post"));
+    }
+  }
+
+  async removePost(req, res) {
+    try {
+      await _postService.removePost(req.params.id);
+
+      res.status(204).send(ResponseHandler("Post removed"));
+    } catch (error) {
+      res
+        .status(error.status || 400)
+        .send(ResponseHandler(error.message || "Fail to remove post"));
     }
   }
 }

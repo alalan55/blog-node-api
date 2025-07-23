@@ -63,7 +63,11 @@ class UserService {
 
   async getUserById(userId) {
     try {
-      const user = await UserModel.findByPk(userId);
+      if (!userId) throw new HttpError("User ID is required", 400);
+      
+      const parsedId = +userId;
+      const user = await UserModel.findByPk(parsedId);
+      
       return user;
     } catch (error) {
       throw error;
