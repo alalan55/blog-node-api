@@ -1,3 +1,4 @@
+import { HashPassword } from "../helpers/helpers.js";
 import UserModel from "../models/userModel.js";
 
 export class HttpError extends Error {
@@ -16,7 +17,7 @@ class UserService {
       if (alreadyRegistered)
         throw new HttpError("User already registered", 400);
 
-      const hashPassword = password;
+      const hashPassword = await HashPassword(password);
 
       const newUser = await UserModel.create({
         email,
@@ -64,10 +65,10 @@ class UserService {
   async getUserById(userId) {
     try {
       if (!userId) throw new HttpError("User ID is required", 400);
-      
+
       const parsedId = +userId;
       const user = await UserModel.findByPk(parsedId);
-      
+
       return user;
     } catch (error) {
       throw error;
