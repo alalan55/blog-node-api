@@ -22,3 +22,18 @@ export const ComparePassword = async (password, hash) => {
     throw new Error("Error comparing password: " + error.message);
   }
 };
+
+
+export class HttpError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
+
+export const ResponseHandler = (message = null, content = null) => {
+  return {
+    message,
+    content,
+  };
+};
