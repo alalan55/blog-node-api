@@ -25,6 +25,9 @@ export default class PostController {
 
   async createPost(req, res) {
     try {
+      if (req.body.userId !== req.user.id)
+        return res.status(401).send(ResponseHandler("User is not authorized"));
+
       const newPost = await _postService.createPost(req.body);
 
       res.status(201).send(ResponseHandler("Post created", newPost));
@@ -37,6 +40,9 @@ export default class PostController {
 
   async removePost(req, res) {
     try {
+      if (req.body.userId !== req.user.id)
+        return res.status(401).send(ResponseHandler("User is not authorized"));
+
       await _postService.removePost(req.params.id);
 
       res.status(204).send(ResponseHandler("Post removed"));
